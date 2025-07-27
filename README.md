@@ -1,5 +1,6 @@
 # CWW (Chat With Web)
-![Explain Example](./imgs/explain.png)
+![Explain Example](./explain.png)
+
 CWW (Chat With Web) lets you chat with the currently opened tab in Firefox. It enables you to interact with articles and YouTube videos directly from your browser. However, chatting with non-article sites is not supported at this time. Additionally:
 - Chatting with pages that require a sign-in is currently not supported.
 - Private YouTube videos cannot be accessed for chat.
@@ -155,7 +156,7 @@ This confirms the backend is up and provides version and copyright information.
 
 To chat with any supported page, click the **CWW addon icon** in Firefox. This will open the chatbox, allowing you to interact with articles or YouTube videos directly.
 
-![Summary Example](./imgs/summary.png)
+![Summary Example](./summary.png)
 ---
 
 CWW current version is not open source, but the intention is to make future versions open source. A key future goal is to eliminate the need for a backend, making the app more streamlined and accessible.
