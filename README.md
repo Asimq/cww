@@ -65,53 +65,25 @@ To ensure the safety of the binaries, you can review the VirusTotal scan results
 
 After downloading, extract the contents to a folder of your choice. Then follow the instructions below for your platform.
 
-#### Install as a Service (All Platforms)
 
-##### Windows Service
+#### Install and Manage as a Service (All Platforms)
 
-1. Extract the pre-built Windows release to a folder (e.g., `C:\cww-backend`).
-2. Open **PowerShell as Administrator** in that folder.
+On **Windows, Linux, and macOS**, you can install, start, stop, and uninstall the backend as a service using the same commands. The service will be set to start automatically on boot and will survive restarts.
+
+1. Extract the pre-built release for your platform to a folder (e.g., `C:\cww-backend` on Windows, `/opt/cww-backend` or `~/cww-backend` on Linux/macOS).
+2. Open a terminal (**PowerShell as Administrator** on Windows, or a terminal with appropriate permissions on Linux/macOS) in that folder.
 3. Run the following command to install the service:
-   ```powershell
-   ./cww-backend.exe install
-   ```
-   - The service will be set to start automatically on boot and will survive Windows restarts.
-   - To manage the service:
-     ```powershell
-     ./cww-backend.exe start      # Start the service
-     ./cww-backend.exe stop       # Stop the service
-     ./cww-backend.exe uninstall  # Uninstall the service
-     ```
-   - Set environment variables before installing or starting the service (see "Environment Variables" below).
-
-##### Linux (systemd)
-
-1. Copy the pre-built Linux binary (e.g., `cww-backend`) and the provided `.service` file to your Linux server.
-2. Place the binary in your desired directory (e.g., `/opt/cww-backend`).
-3. Edit the `.service` file if needed (e.g., update paths, user, environment variables).
-4. Copy the service file to systemd:
    ```sh
-   sudo cp cww-backend.service /etc/systemd/system/
-   sudo systemctl daemon-reload
-   sudo systemctl enable cww-backend
-   sudo systemctl start cww-backend
+   ./cww-backend install
    ```
-   - To check status: `sudo systemctl status cww-backend`
-   - Set environment variables in the service file (Environment=) or via systemd drop-ins.
-
-##### macOS (launchd)
-
-1. Copy the pre-built macOS binary (e.g., `cww-backend`) and the provided `.plist` file to your Mac.
-2. Place the binary in your desired directory (e.g., `/Applications/cww-backend`).
-3. Edit the `.plist` file if needed (e.g., update paths, environment variables).
-4. Copy the plist file:
-   - For system-wide: `sudo cp com.cww.backend.plist /Library/LaunchDaemons/`
-   - For user: `cp com.cww.backend.plist ~/Library/LaunchAgents/`
-5. Load the service:
-   - System-wide: `sudo launchctl load /Library/LaunchDaemons/com.cww.backend.plist`
-   - User: `launchctl load ~/Library/LaunchAgents/com.cww.backend.plist`
-   - To check status: `launchctl list | grep cww`
-   - Set environment variables in the plist file.
+   - To manage the service:
+     ```sh
+     ./cww-backend start      # Start the service
+     ./cww-backend stop       # Stop the service
+     ./cww-backend uninstall  # Uninstall the service
+     ```
+   - On Windows, use `./cww-backend.exe ...` if running from PowerShell.
+   - Set environment variables (if required) before installing or starting the service (see "Environment Variables" below).
 
 #### Using Docker (Works on Any OS)
 
