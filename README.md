@@ -27,29 +27,91 @@ To use CWW, you need to:
 
 ## Installation Guide
 
+
 ### 1. Install cww-backend
 
-#### As a Windows Service (Recommended for Windows)
+#### Download the Correct Build for Your Platform
 
-Download the `windows_x86_64.zip` release from [this link](https://k00.fr/eztxz1en) and follow the steps below:
+Pre-built binaries and service files for all major platforms are available for download:
 
-1. Extract all files to a folder (e.g., `C:\cww-backend`).
+**Download all builds:** [https://k00.fr/7g2odl9j](https://k00.fr/7g2odl9j)
+
+Extract the archive that matches your operating system and CPU architecture:
+
+| Archive Name         | Platform                |
+|---------------------|-------------------------|
+| windows-amd64.zip   | Windows 64-bit (x86_64) |
+| windows-386.zip     | Windows 32-bit (x86)    |
+| linux-amd64.zip     | Linux 64-bit (x86_64)   |
+| linux-arm64.zip     | Linux 64-bit (ARM)      |
+| darwin-amd64.zip    | macOS 64-bit (Intel)    |
+| darwin-arm64.zip    | macOS 64-bit (Apple Silicon) |
+
+
+#### Virus Scan Results
+
+To ensure the safety of the binaries, you can review the VirusTotal scan results for each build:
+
+| Platform                | VirusTotal Link                                                                 |
+|-------------------------|-------------------------------------------------------------------------------|
+| Windows 64-bit (x86_64) | [VirusTotal Scan](https://www.virustotal.com/gui/file/7f5126555b3ed424cb555bc768d1f48dfb02217d5afb43ec3ecb1906a20fcb3b/details) |
+| Windows 32-bit (x86)    | [VirusTotal Scan](https://www.virustotal.com/gui/file/de6b3ce308a1f31f3ff1ea0c80835b2d53f4a1334c52beea8a94b08b4a530f14/detection) |
+| Linux 64-bit (x86_64)   | [VirusTotal Scan](https://www.virustotal.com/gui/file/d52637e7526f756ede3020018fa861e72bf5f7b1b08c2d25c2800f4fe9925fd5/details) |
+| Linux 64-bit (ARM)      | [VirusTotal Scan](https://www.virustotal.com/gui/file/b831c0f2def34e5139467d63e0e02182ec2c80089b6461874076f2e39f4807e6/details) |
+| macOS 64-bit (Intel)    | [VirusTotal Scan](https://www.virustotal.com/gui/file/479f0b42a8483a531c54ad973d8ea4f28395f1dccb2a692f5444044cf4e884de?nocache=1) |
+| macOS 64-bit (Apple Silicon) | [VirusTotal Scan](https://www.virustotal.com/gui/file/235d5584be13028542d118261976b475839c7282b97b74f6fa8d72c24ae975cb/details) |
+
+> **Note:** The Windows 32-bit (x86) build shows 1/72 detections on VirusTotal (`W32.Malware.gen`). This is a known false positive that sometimes occurs with Go-compiled binaries, especially for 32-bit Windows targets. The binary is safe and clean; you can verify this by checking the scan details and seeing that all major antivirus engines report it as clean.
+
+After downloading, extract the contents to a folder of your choice. Then follow the instructions below for your platform.
+
+#### Install as a Service (All Platforms)
+
+##### Windows Service
+
+1. Extract the pre-built Windows release to a folder (e.g., `C:\cww-backend`).
 2. Open **PowerShell as Administrator** in that folder.
-3. Run the following command to install and start the service:
-
+3. Run the following command to install the service:
    ```powershell
-   ./service.ps1 -action install
+   ./cww-backend.exe install
    ```
    - The service will be set to start automatically on boot and will survive Windows restarts.
-   - To stop, start, or uninstall the service, use:
+   - To manage the service:
      ```powershell
-     ./service.ps1 -action stop
-     ./service.ps1 -action start
-     ./service.ps1 -action uninstall
+     ./cww-backend.exe start      # Start the service
+     ./cww-backend.exe stop       # Stop the service
+     ./cww-backend.exe uninstall  # Uninstall the service
      ```
-   - You can set environment variables to customize the backend, including the port and session settings, even when running as a Windows service.
-   - See the **Environment Variables** section below for how to set up environment variables in Windows.
-   - You must set these variables before installing or starting the service for them to take effect.
+   - Set environment variables before installing or starting the service (see "Environment Variables" below).
+
+##### Linux (systemd)
+
+1. Copy the pre-built Linux binary (e.g., `cww-backend`) and the provided `.service` file to your Linux server.
+2. Place the binary in your desired directory (e.g., `/opt/cww-backend`).
+3. Edit the `.service` file if needed (e.g., update paths, user, environment variables).
+4. Copy the service file to systemd:
+   ```sh
+   sudo cp cww-backend.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable cww-backend
+   sudo systemctl start cww-backend
+   ```
+   - To check status: `sudo systemctl status cww-backend`
+   - Set environment variables in the service file (Environment=) or via systemd drop-ins.
+
+##### macOS (launchd)
+
+1. Copy the pre-built macOS binary (e.g., `cww-backend`) and the provided `.plist` file to your Mac.
+2. Place the binary in your desired directory (e.g., `/Applications/cww-backend`).
+3. Edit the `.plist` file if needed (e.g., update paths, environment variables).
+4. Copy the plist file:
+   - For system-wide: `sudo cp com.cww.backend.plist /Library/LaunchDaemons/`
+   - For user: `cp com.cww.backend.plist ~/Library/LaunchAgents/`
+5. Load the service:
+   - System-wide: `sudo launchctl load /Library/LaunchDaemons/com.cww.backend.plist`
+   - User: `launchctl load ~/Library/LaunchAgents/com.cww.backend.plist`
+   - To check status: `launchctl list | grep cww`
+   - Set environment variables in the plist file.
 
 #### Using Docker (Works on Any OS)
 
@@ -79,18 +141,12 @@ Download the `windows_x86_64.zip` release from [this link](https://k00.fr/eztxz1
    - This exposes port **54321** on your host. You can change the left side of `-p` if you want to use a different external port.
    - The container will automatically restart if Docker or Windows restarts.
 
-4. Set environment variables as needed:
+4. Set environment variables as needed (applies to all OSes):
    - See the [Environment Variables for CWW Backend](#environment-variables-for-cww-backend) section for available variables and their defaults.
-   - **Windows:**
-     1. Open the Start Menu and search for `Environment Variables`.
-     2. Click on `Edit the system environment variables`.
-     3. In the System Properties window, click `Environment Variables...`.
-     4. Under `User variables` or `System variables`, click `New...`.
-     5. Enter the variable name (e.g., `CWW_PORT`) and value (e.g., `54321`).
-     6. Click OK to save. Repeat for each variable you want to set.
-     7. Restart the cww-backend service for changes to take effect.
-   - **Docker:**
-     Example to set variables:
+   - **Windows:** Set environment variables in the System Properties > Environment Variables dialog before installing or starting the service. Restart the service after making changes.
+   - **Linux (systemd):** Set environment variables in the `.service` file using `Environment=` lines, or use a systemd drop-in override. Reload and restart the service after changes.
+   - **macOS (launchd):** Set environment variables in the `.plist` file under the `EnvironmentVariables` section. Reload and restart the service after changes.
+   - **Docker:** Use the `-e` flag to set environment variables when running the container:
      ```sh
      docker run -d --restart unless-stopped \
        -e CWW_PORT=54321 -e CWW_SESSION_TTL=3600 -e CWW_CLEANUP_INTERVAL=300 \
@@ -164,3 +220,5 @@ CWW current version is not open source, but the intention is to make future vers
 ---
 
 Enjoy chatting with your web pages using CWW!
+
+
