@@ -160,6 +160,7 @@ The following environment variables can be set to customize the backend behavior
 | CWW_PORT                | 54321       | Port for backend server                                          |
 | CWW_SESSION_TTL         | 3600        | Session time-to-live in seconds (default: 1 hour)                |
 | CWW_CLEANUP_INTERVAL    | 300         | Session cleanup interval in seconds (default: 5 minutes)         |
+| **(Docker only)**       |             | The following variables are only available in Docker (Python backend), not in Windows/Linux/macOS services (Go backend): |
 | CWW_USE_YT_PROXY        | unset/false | Set to `true` to use a proxy for YouTube video chat              |
 | CWW_WEBSHARE_USER       | unset       | Webshare proxy username (required if using proxy)                |
 | CWW_WEBSHARE_PASS       | unset       | Webshare proxy password (required if using proxy)                |
@@ -169,6 +170,7 @@ The following environment variables can be set to customize the backend behavior
 
 - The backend is intended to be run at your home IP address.
 - If you are using a VPN, you must bypass the backend for chat with YouTube videos to work, or enable the proxy option.
+If you are using a VPN or a data center IP, you must bypass the backend for chat with YouTube videos to work, or enable the proxy option.
 - Currently, only the Webshare residential proxy is supported. This is a paid service; you must purchase their residential proxy package to use it. Visit [Webshare.io](https://www.webshare.io/) for more details.
 ---
 
@@ -192,5 +194,3 @@ CWW current version is not open source, but the intention is to make future vers
 ---
 
 Enjoy chatting with your web pages using CWW!
-
-
