@@ -169,8 +169,7 @@ The following environment variables can be set to customize the backend behavior
 ## Backend Network/Proxy Notes
 
 - The backend is intended to be run at your home IP address.
-- If you are using a VPN, you must bypass the backend for chat with YouTube videos to work, or enable the proxy option.
-If you are using a VPN or a data center IP, you must bypass the backend for chat with YouTube videos to work, or enable the proxy option.
+- If you are using a VPN or a data center IP, you must bypass the backend for chat with YouTube videos to work, or enable the proxy option.
 - Currently, only the Webshare residential proxy is supported. This is a paid service; you must purchase their residential proxy package to use it. Visit [Webshare.io](https://www.webshare.io/) for more details.
 ---
 
