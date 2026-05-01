@@ -75,7 +75,7 @@ On **Windows, Linux, and macOS**, you can install, start, stop, and uninstall th
 
 ### 2. Install Firefox Extension
 
-Download the Firefox signed addon from [this link](https://k00.fr/59jn0t05) and follow the steps below:
+Download the Firefox signed addon from [this link](https://k00.fr/hm4r48t0) and follow the steps below:
 
 1. Download the `.xpi` file to your computer.
 2. Open Firefox and either:
