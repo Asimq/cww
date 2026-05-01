@@ -105,7 +105,7 @@ Download the Firefox signed addon from [this link](https://k00.fr/59jn0t05) and 
 
 > For local servers (Ollama, LM Studio), enter any non-empty string as the API Key (e.g. `ollama`).
 
-> Google Gemini offers **250 free requests per day** (10 per minute) — a good starting point if you don't have a paid API subscription. Get your key at [Google AI Studio](https://aistudio.google.com/app/apikey).
+> Google Gemini offers some free requests per day — a good starting point if you don't have a paid API subscription. Get your key at [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 ---
 
