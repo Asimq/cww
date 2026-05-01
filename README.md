@@ -1,19 +1,24 @@
 # CWW (Chat With Web)
 ![Explain Example](./explain.png)
 
-CWW (Chat With Web) lets you chat with the currently opened tab in Firefox. It enables you to interact with articles and YouTube videos directly from your browser. However, chatting with non-article sites is not supported at this time. Additionally:
-- Chatting with pages that require a sign-in is currently not supported.
-- Private YouTube videos cannot be accessed for chat.
+CWW (Chat With Web) lets you chat with the currently opened tab in Firefox. It enables you to interact with articles and YouTube videos directly from your browser.
 
-The default language of chat is English, but you can chat in any language as long as it is supported by Gemini.
+---
+Version 0.3.0
+## What's New in This Version
 
-The purpose of the app is to enhance your understanding of articles and YouTube videos in an educational context. It can:
-- Summarize lengthy articles into clear and concise points.
-- Extract key insights or arguments from opinion pieces.
-- Provide detailed explanations for complex topics covered in YouTube videos.
-- Help you grasp the intention and perspective of the writer or creator.
+### Added / Changed
+- **Any OpenAI-compatible LLM is now supported** — no longer limited to Google Gemini. You can use OpenAI, Anthropic Claude, Google Gemini, OpenRouter, Ollama (local), LM Studio (local), or any provider with an OpenAI-spec API.
+- **Provider URL, Model, and API Key are now configured in the extension settings** — nothing is stored on the backend server.
+- **Verify & Save** — settings are verified against your LLM provider before being saved. If the provider is unreachable or the key is invalid, you are notified immediately.
+- **PageSnap fallback** — for pages the backend cannot fetch directly (e.g. paywalled, JavaScript-heavy, or sign-in-required pages), the extension captures the page HTML from your browser and sends it to the backend for parsing. This means pages requiring a sign-in are now supported as long as you are already logged in and viewing the page.
+- **Ollama support (local inference)** — run fully offline with any Ollama-compatible model. See the Ollama section below for recommendations.
 
-The app integrates with Google Gemini, so you will need to obtain your Gemini API key by visiting [Google AI Studio](https://aistudio.google.com/app/apikey). Gemini offers **250 free requests per day** (with a maximum of 10 requests per minute), allowing you to chat with a large number of pages daily.
+### Removed
+- **Gemini-only setup** — the extension no longer has a dedicated "Gemini API Key" field. All providers are configured through the unified Provider URL + Model + API Key fields.
+- **Docker image** — the Docker image has been decommissioned and is no longer available or maintained. Use the native binary or service installation instead.
+- **Docker proxy variables** (`CWW_USE_YT_PROXY`, `CWW_WEBSHARE_USER`, `CWW_WEBSHARE_PASS`) — these were part of the old Python-based Docker backend and are not available in the current Go backend.
+- **Hardcoded language restriction** — the chat language is now determined by the LLM you configure, not fixed to English/Gemini.
 
 ---
 
@@ -27,11 +32,9 @@ To use CWW, you need to:
 
 ## Installation Guide
 
-
 ### 1. Install cww-backend
 
 #### Download the Correct Build for Your Platform
-
 Pre-built binaries and service files for all major platforms are available for download on the [Releases page](https://github.com/Asimq/cww/releases).
 
 Extract the archive that matches your operating system and CPU architecture:
@@ -68,47 +71,6 @@ On **Windows, Linux, and macOS**, you can install, start, stop, and uninstall th
    - On Windows, use `./cww-backend.exe ...` if running from PowerShell.
    - Set environment variables (if required) before installing or starting the service (see "Environment Variables" below).
 
-#### Using Docker (Works on Any OS)
-
-1. Make sure Docker is installed and running.
-
-> **Note:** The Docker method works on both x86-based (most Windows/Linux PCs, Intel-based Macs) and ARM64-based systems (Apple Silicon Macs, Raspberry Pi, etc.) as long as Docker is installed. Be sure to use the correct image tag for your system: `asimijaz/cww-backend:latest` for x86, and `asimijaz/cww-backend:arm64` for ARM64.
-
-2. Pull the appropriate image for your system:
-   - For x86-based systems (most Windows/Linux PCs, Intel Macs):
-     ```powershell
-     docker pull asimijaz/cww-backend:latest
-     ```
-   - For ARM64-based systems (Apple Silicon Macs, Raspberry Pi, etc.):
-     ```powershell
-     docker pull asimijaz/cww-backend:arm64
-     ```
-
-3. Run the container as a daemon (background) and persist across Windows or Docker restarts:
-   - For x86-based systems:
-     ```powershell
-     docker run -d --restart unless-stopped -p 54321:54321 asimijaz/cww-backend:latest
-     ```
-   - For ARM64-based systems:
-     ```powershell
-     docker run -d --restart unless-stopped -p 54321:54321 asimijaz/cww-backend:arm64
-     ```
-   - This exposes port **54321** on your host. You can change the left side of `-p` if you want to use a different external port.
-   - The container will automatically restart if Docker or Windows restarts.
-
-4. Set environment variables as needed (applies to all OSes):
-   - See the [Environment Variables for CWW Backend](#environment-variables-for-cww-backend) section for available variables and their defaults.
-   - **Windows:** Set environment variables in the System Properties > Environment Variables dialog before installing or starting the service. Restart the service after making changes.
-   - **Linux (systemd):** Set environment variables in the `.service` file using `Environment=` lines, or use a systemd drop-in override. Reload and restart the service after changes.
-   - **macOS (launchd):** Set environment variables in the `.plist` file under the `EnvironmentVariables` section. Reload and restart the service after changes.
-   - **Docker:** Use the `-e` flag to set environment variables when running the container:
-     ```sh
-     docker run -d --restart unless-stopped \
-       -e CWW_PORT=54321 -e CWW_SESSION_TTL=3600 -e CWW_CLEANUP_INTERVAL=300 \
-       -e CWW_USE_YT_PROXY=true -e CWW_WEBSHARE_USER=youruser -e CWW_WEBSHARE_PASS=yourpass \
-       -p 54321:54321 asimijaz/cww-backend:latest
-     ```
-
 ---
 
 ### 2. Install Firefox Extension
@@ -123,56 +85,119 @@ Download the Firefox signed addon from [this link](https://k00.fr/59jn0t05) and 
 
 ---
 
-## Setting Up the Gemini API Key and Service URL
+## Configuring the Extension
 
-1. Open Firefox and navigate to `about:addons`.
-2. Locate the CWW extension and click on the three dots next to it.
-3. Select `Options` from the dropdown menu.
-4. Set the **Service URL** to `http://localhost:54321` (if running the backend locally on Windows).
-5. Enter your **Gemini API Key** obtained from [Google AI Studio](https://aistudio.google.com/app/apikey).
-6. Click `Save Settings` to apply the changes.
+1. Open Firefox → `about:addons` → find CWW → click the three dots → **Options**.
+2. Set the **Service URL** to `http://localhost:54321` (default if running locally).
+3. Set your **Provider URL**, **Model**, and **API Key** for your chosen LLM provider (see the table below or use the **Fill** buttons on the options page).
+4. Click **Verify & Save** — the extension tests the connection to your provider before saving. If verification fails, check your key and URL.
+
+### Provider Reference
+
+| Provider | Provider URL | Example Model |
+|---|---|---|
+| Google Gemini | `https://generativelanguage.googleapis.com/v1beta/openai/` | `gemini-2.5-flash` |
+| OpenAI | `https://api.openai.com/v1` | `gpt-4o` |
+| Anthropic Claude | `https://api.anthropic.com/v1` | `claude-3-5-haiku-20241022` |
+| OpenRouter | `https://openrouter.ai/api/v1` | `google/gemini-2.5-flash` |
+| Ollama (local) | `http://localhost:11434/v1` | `gemma3:latest` |
+| LM Studio (local) | `http://localhost:1234/v1` | *(your loaded model)* |
+
+> For local servers (Ollama, LM Studio), enter any non-empty string as the API Key (e.g. `ollama`).
+
+> Google Gemini offers **250 free requests per day** (10 per minute) — a good starting point if you don't have a paid API subscription. Get your key at [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+---
+
+## PageSnap
+
+PageSnap is a feature in the browser extension that captures the HTML of the currently open page and sends it directly to the backend for parsing, instead of having the backend fetch the page itself.
+
+**Why it was introduced:**
+
+**1. Access to pages already open in your browser**
+Some pages cannot be fetched by the backend — paywalled articles, pages behind a sign-in, or JavaScript-rendered content that requires an active browser session. PageSnap bypasses this by reading the page content directly from your browser, where you are already authenticated and the page is fully loaded.
+
+**2. Privacy control when using non-local LLMs**
+When PageSnap is turned off, the backend fetches the page content server-side and sends it to your configured LLM provider. If you are using a cloud-based provider (e.g. OpenAI, Gemini, OpenRouter), this means the page content is transmitted to a third-party service. Keeping PageSnap off on pages with sensitive information avoids sending that content to an external LLM.
+
+If you are using a local model (Ollama, LM Studio), there is no privacy concern — all data stays on your machine — so PageSnap can be safely turned on without issue.
 
 ---
 
-## Environment Variables for CWW Backend
+## Using Ollama (Local Inference)
 
-The following environment variables can be set to customize the backend behavior:
+Ollama lets you run models fully offline on your own machine — no API key or internet connection required after the model is downloaded.
 
-| Variable                | Default      | Description                                                      |
-|-------------------------|-------------|------------------------------------------------------------------|
-| CWW_PORT                | 54321       | Port for backend server                                          |
-| CWW_SESSION_TTL         | 3600        | Session time-to-live in seconds (default: 1 hour)                |
-| CWW_CLEANUP_INTERVAL    | 300         | Session cleanup interval in seconds (default: 5 minutes)         |
-| **(Docker only)**       |             | The following variables are only available in Docker (Python backend), not in Windows/Linux/macOS services (Go backend): |
-| CWW_USE_YT_PROXY        | unset/false | Set to `true` to use a proxy for YouTube video chat              |
-| CWW_WEBSHARE_USER       | unset       | Webshare proxy username (required if using proxy)                |
-| CWW_WEBSHARE_PASS       | unset       | Webshare proxy password (required if using proxy)                |
+**Minimum recommended model:** `gemma3:1b` — 32K context window
+```sh
+ollama pull gemma3:1b
+```
+
+**Better quality:** `gemma3:latest` (4b) — 128K context window (requires more RAM/VRAM)
+```sh
+ollama pull gemma3:latest
+```
+
+> **Context length note:** `gemma3:1b` has a 32K context window, which is sufficient for short to medium articles but will struggle with long YouTube transcripts or lengthy pages. `gemma3:latest` (4b) offers a 128K context window and handles most content well, at the cost of higher memory usage. The backend has been optimised for Gemma/Ollama usage — responses are structured to keep token usage lean — but very long content may still produce incomplete or lower-quality answers on smaller models. For best results with `gemma3:1b`, stick to shorter articles or videos under ~15 minutes.
 
 ---
-## Backend Network/Proxy Notes
 
-- The backend is intended to be run at your home IP address.
-- If you are using a VPN or a data center IP, you must bypass the backend for chat with YouTube videos to work, or enable the proxy option.
-- Currently, only the Webshare residential proxy is supported. This is a paid service; you must purchase their residential proxy package to use it. Visit [Webshare.io](https://www.webshare.io/) for more details.
+## Environment Variables
+
+| Variable               | Default | Description                                         |
+|------------------------|---------|-----------------------------------------------------|
+| `CWW_PORT`             | `54321` | Port the backend listens on                         |
+| `CWW_SESSION_TTL`      | `3600`  | Session idle timeout in seconds (default 1 hour)    |
+| `CWW_CLEANUP_INTERVAL` | `300`   | Session GC interval in seconds (default 5 min)      |
+| `GIN_MODE`             | `debug` | Set to `release` for production deployments         |
+| `CWW_DEBUG`            | `0`     | Set to `1` for verbose LLM error logging            |
+
+> **Windows service note:** Services run under the SYSTEM account and do not inherit user environment variables. Set any variables at Machine level:
+> ```powershell
+> [System.Environment]::SetEnvironmentVariable("CWW_PORT", "54321", "Machine")
+> ```
+
 ---
 
-To check if the backend is running successfully, open your browser and go to:
+## Backend Network Notes
+
+- The backend is intended to run at your home/local IP. Data centre IPs and most VPN exit nodes are blocked by YouTube's transcript API.
+- If you are on a VPN, bypass the backend's traffic through it for YouTube chat to work.
+- Proxy support (previously available in the old Python-based backend) is not available in the current Go backend.
+
+---
+
+## Verifying the Backend is Running
+
+Open your browser and visit:
 
     http://localhost:54321/about
 
-This confirms the backend is up and provides version and copyright information.
+A JSON response with the app name and version confirms the backend is up.
 
 ---
 
-## Using CWW to Chat with Pages
+## Current Limitations
 
-To chat with any supported page, click the **CWW addon icon** in Firefox. This will open the chatbox, allowing you to interact with articles or YouTube videos directly.
+- Pages that require a sign-in can be used if you are already signed in and viewing the page — the PageSnap fallback will capture the content directly from your browser session. However, pages that require sign-in and cannot be fetched server-side are not supported without PageSnap.
+- Private YouTube videos cannot be accessed.
+- Chatting with non-article, non-YouTube pages may not work if the page blocks server-side fetching — use the PageSnap fallback in that case.
+- Streaming responses are not supported yet — the full reply is returned at once after the LLM finishes generating.
+
+---
+
+## Using CWW
+
+Click the **CWW addon icon** in Firefox to open the chatbox and start chatting with the current article or YouTube video.
 
 ![Summary Example](./summary.png)
----
-
-CWW current version is not open source, but the intention is to make future versions open source. A key future goal is to eliminate the need for a backend, making the app more streamlined and accessible.
 
 ---
 
 Enjoy chatting with your web pages using CWW!
+
+
+
+
+
