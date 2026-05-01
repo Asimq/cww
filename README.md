@@ -32,9 +32,7 @@ To use CWW, you need to:
 
 #### Download the Correct Build for Your Platform
 
-Pre-built binaries and service files for all major platforms are available for download:
-
-**Download all builds:** [https://k00.fr/7g2odl9j](https://k00.fr/7g2odl9j)
+Pre-built binaries and service files for all major platforms are available for download on the [Releases page](https://github.com/Asimq/cww/releases).
 
 Extract the archive that matches your operating system and CPU architecture:
 
@@ -47,21 +45,6 @@ Extract the archive that matches your operating system and CPU architecture:
 | darwin-amd64.zip    | macOS 64-bit (Intel)    |
 | darwin-arm64.zip    | macOS 64-bit (Apple Silicon) |
 
-
-#### Virus Scan Results
-
-To ensure the safety of the binaries, you can review the VirusTotal scan results for each build:
-
-| Platform                | VirusTotal Link                                                                 |
-|-------------------------|-------------------------------------------------------------------------------|
-| Windows 64-bit (x86_64) | [VirusTotal Scan](https://www.virustotal.com/gui/file/7f5126555b3ed424cb555bc768d1f48dfb02217d5afb43ec3ecb1906a20fcb3b/details) |
-| Windows 32-bit (x86)    | [VirusTotal Scan](https://www.virustotal.com/gui/file/de6b3ce308a1f31f3ff1ea0c80835b2d53f4a1334c52beea8a94b08b4a530f14/detection) |
-| Linux 64-bit (x86_64)   | [VirusTotal Scan](https://www.virustotal.com/gui/file/d52637e7526f756ede3020018fa861e72bf5f7b1b08c2d25c2800f4fe9925fd5/details) |
-| Linux 64-bit (ARM)      | [VirusTotal Scan](https://www.virustotal.com/gui/file/b831c0f2def34e5139467d63e0e02182ec2c80089b6461874076f2e39f4807e6/details) |
-| macOS 64-bit (Intel)    | [VirusTotal Scan](https://www.virustotal.com/gui/file/479f0b42a8483a531c54ad973d8ea4f28395f1dccb2a692f5444044cf4e884de?nocache=1) |
-| macOS 64-bit (Apple Silicon) | [VirusTotal Scan](https://www.virustotal.com/gui/file/235d5584be13028542d118261976b475839c7282b97b74f6fa8d72c24ae975cb/details) |
-
-> **Note:** The Windows 32-bit (x86) build shows 1/72 detections on VirusTotal (`W32.Malware.gen`). This is a known false positive that sometimes occurs with Go-compiled binaries, especially for 32-bit Windows targets. The binary is safe and clean; you can verify this by checking the scan details and seeing that all major antivirus engines report it as clean.
 
 After downloading, extract the contents to a folder of your choice. Then follow the instructions below for your platform.
 
@@ -130,7 +113,7 @@ On **Windows, Linux, and macOS**, you can install, start, stop, and uninstall th
 
 ### 2. Install Firefox Extension
 
-Download the Firefox signed addon from [this link](https://k00.fr/rhi3whcv) and follow the steps below:
+Download the Firefox signed addon from [this link](https://k00.fr/59jn0t05) and follow the steps below:
 
 1. Download the `.xpi` file to your computer.
 2. Open Firefox and either:
